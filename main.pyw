@@ -15,7 +15,8 @@ def update_data():
 
     # Make the API request
     try:
-        response_API = requests.get('http://api.aladhan.com/v1/timingsByCity?city=Ancona&country=Italy&method=3')
+        #Refer to the Api webpage for more informations
+        response_API = requests.get('http://api.aladhan.com/v1/timingsByCity?city=CityName&country=CountryName&method=MethodOfCalculating')
         response_API.raise_for_status()
         data = response_API.json()
         timings = data.get('data', {}).get('timings', {})
