@@ -4,19 +4,24 @@ from infi.systray import SysTrayIcon
 import threading
 import schedule
 import time
+import urllib.request
+#check if there is internet access
+def connect(host='http://google.com'):
+    try:
+        urllib.request.urlopen(host) #Python 3.x
+        return True
+    except:
+        return False
 
 def update_data():
     # Check for internet connectivity
-    try:
-        requests.get('http://google.com', timeout=5)
-    except requests.ConnectionError:
-        print("No internet connection available.")
-        exit()
+    while not connect():
+        print("No internet connection available, retrying...")
+        time.sleep(10)
 
     # Make the API request
     try:
-        #Refer to the Api webpage for more informations
-        response_API = requests.get('http://api.aladhan.com/v1/timingsByCity?city=CityName&country=CountryName&method=MethodOfCalculating')
+        response_API = requests.get('http://api.aladhan.com/v1/timingsByCity?city=Ancona&country=Italy&method=3')
         response_API.raise_for_status()
         data = response_API.json()
         timings = data.get('data', {}).get('timings', {})
