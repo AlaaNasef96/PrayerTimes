@@ -5,6 +5,19 @@ import threading
 import schedule
 import time
 import urllib.request
+from plyer import notification
+from datetime import datetime
+
+# function to send notifications 
+def send_notification(title, message):
+    notification.notify(
+        title = title,
+        message = message,
+        timeout = 10
+    )
+
+
+
 #check if there is internet access
 def connect(host='http://google.com'):
     try:
@@ -27,6 +40,12 @@ def update_data():
         timings = data.get('data', {}).get('timings', {})
         if not timings:
             raise ValueError("Timings data not found in API response.")
+        global prayer_time_Fajr
+        global prayer_time_Sunrise
+        global prayer_time_Dhuhr
+        global prayer_time_Asr 
+        global prayer_time_Maghrib
+        global prayer_time_Isha
         prayer_time_Fajr = timings.get('Fajr')
         prayer_time_Sunrise = timings.get('Sunrise')
         prayer_time_Dhuhr = timings.get('Dhuhr')
@@ -70,4 +89,17 @@ schedule.every(1).hours.do(update_data)
 update_data()
 while True:
     schedule.run_pending()
-    time.sleep(1)
+    time.sleep(30)
+    current_time = datetime.now().strftime("%H:%M")
+    if current_time == prayer_time_Fajr:
+        send_notification('Azan','Time to offer Fajr')
+    elif current_time == prayer_time_Sunrise:
+        send_notification('Azan','Time of Sunrise')
+    elif current_time == prayer_time_Dhuhr:
+        send_notification('Azan','Time to offer Dhuhr')
+    elif current_time == prayer_time_Asr:
+        send_notification('Azan','Time to offer Asr')
+    elif current_time == prayer_time_Maghrib:
+        send_notification('Azan','Time to offer Maghrib')
+    elif current_time == prayer_time_Isha:
+        send_notification('Azan','Time to offer Isha')
